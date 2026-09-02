@@ -1,121 +1,90 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+
+  const [title, setTitle] = useState('')
+  const [details, setDetails] = useState('')
+
+  const [task, setTask] = useState([])
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+
+    const copyTask = [...task];
+
+    copyTask.push({ title, details })
+
+    setTask(copyTask)
+
+    setTitle('')
+    setDetails('')
+  }
+
+
+  const deleteNote = (idx) => {
+    const copyTask = [...task];
+
+    copyTask.splice(idx, 1)
+
+    setTask(copyTask)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className='h-screen lg:flex bg-black text-white'>
+
+      <form onSubmit={(e) => {
+        submitHandler(e)
+      }} className='flex gap-4 lg:w-1/2 p-10 flex-col items-start'>
+
+        <h1 className='text-4xl mb-2 font-bold'>Add Notes</h1>
+
+        {/* PEHLA INPUT FOR HEADING */}
+        <input
+          type="text"
+          placeholder='Enter Notes Heading'
+          className='px-5 w-full font-medium py-2 border-2 outline-none rounded '
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value)
+          }}
+        />
+
+        {/* DETAILED VALA INPUT  */}
+        <textarea
+          type="text"
+          className='px-5 w-full font-medium h-32 py-2 flex items-start flex-row border-2 outline-none  rounded '
+          placeholder='Write Details here'
+          value={details}
+          onChange={(e) => {
+            setDetails(e.target.value)
+          }}
+        />
+
         <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          className='bg-white active:scale-95 font-medium w-full outline-none  text-black px-5 py-2 rounded'
         >
-          Count is {count}
+          Add Note
         </button>
-      </section>
 
-      <div className="ticks"></div>
+      </form>
+      <div className='lg:w-1/2 lg:border-l-2  p-10'>
+        <h1 className='text-4xl font-bold'>Recent Notes</h1>
+        <div className='flex flex-wrap items-start justify-start gap-5 mt-6 h-[90%] overflow-auto'>
+          {task.map(function (elem, idx) {
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+            return <div key={idx} className=" flex justify-between flex-col items-start relative h-52 w-40 bg-cover rounded-xl text-black pt-9 pb-4 px-4 bg-[url('https://static.vecteezy.com/system/resources/previews/037/152/677/non_2x/sticky-note-paper-background-free-png.png')]">
+              <div>
+                <h3 className='leading-tight text-lg font-bold'>{elem.title}</h3>
+                <p className='mt-2 leading-tight text-xs font-semibold text-gray-600'>{elem.details}</p>
+              </div>
+              <button onClick={() => {
+                deleteNote(idx)
+              }} className='w-full cursor-pointer active:scale-95 bg-red-500 py-1 text-xs rounded font-bold text-white'>Delete</button>
+            </div>
+          })}
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      </div>
+    </div>
   )
 }
 
